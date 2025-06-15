@@ -1,0 +1,14 @@
+WITH RECURSIVE Numbers(n) AS (
+  SELECT 2
+  UNION ALL
+  SELECT n + 1 FROM Numbers WHERE n < 1000
+),
+Prime AS (
+  SELECT n
+  FROM Numbers
+  WHERE NOT EXISTS (
+    SELECT 1 FROM Numbers AS f WHERE f.n < n AND f.n > 1 AND n % f.n = 0
+  )
+)
+SELECT STRING_AGG(CAST(n AS VARCHAR), '&') AS Prime_List
+FROM Prime;
