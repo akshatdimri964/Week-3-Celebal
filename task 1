@@ -1,0 +1,16 @@
+WITH ranked_tasks AS (
+  SELECT *,
+         ROW_NUMBER() OVER (ORDER BY Start_Date) -
+         DATEDIFF(day, '2000-01-01', Start_Date) AS grp
+  FROM Projects
+),
+grouped AS (
+  SELECT MIN(Start_Date) AS project_start,
+         MAX(End_Date) AS project_end,
+         COUNT(*) AS days
+  FROM ranked_tasks
+  GROUP BY grp
+)
+SELECT project_start, project_end
+FROM grouped
+ORDER BY days ASC, project_start;
